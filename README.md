@@ -4,7 +4,7 @@ Mon projet pour m'entraîner à la CI/CD et à Kubernetes.
 
 Le principe : je modifie une petite page web (servie par **Nginx**), je fais un `git push`, et **GitLab CI** teste, construit l'image Docker puis la déploie toute seule sur un cluster **k3s** installé sur une instance **EC2 AWS**.
 
-> Je suis débutant : ce projet est fait pour m'entraîner. Si vous voyez des choses à améliorer, n'hésitez pas à me le dire !
+> Ce projet est fait pour m'entraîner. Si vous voyez des choses à améliorer, n'hésitez pas à me le dire !
 
 ## Pourquoi ce projet
 
