@@ -1,0 +1,44 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+test:
+  stage: test
+  script:
+    - echo "Vérification de la page web..."
+    - grep "Bonjour" index.html
+    - kubectl apply --dry-run=client -f k8s/
+  tags:
+    - k3s
+
+build:
+  stage: build
+  script:
+    - echo "Connexion au registre GitLab..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - echo "Construction de l'image $IMAGE"
+    - docker build -t $IMAGE .
+    - echo "Envoi de l'image dans le registre..."
+    - docker push $IMAGE
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  tags:
+    - k3s
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Déploiement sur k3s..."
+    - kubectl apply -f k8s/
+    - kubectl set image deployment/myweb-application web=$IMAGE
+    - echo "Attente que les pods soient prêts..."
+    - kubectl rollout status deployment/myweb-application
+    - kubectl get pods
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  tags:
+    - k3s
