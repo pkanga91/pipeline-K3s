@@ -11,7 +11,7 @@ test:
   script:
     - echo "Vérification de la page web..."
     - grep "Bonjour" index.html
-    - kubectl apply --dry-run=client -f k8s/
+    - kubectl apply --dry-run=client -f k3s/
   tags:
     - k3s
 
@@ -33,7 +33,7 @@ deploy:
   stage: deploy
   script:
     - echo "Déploiement sur k3s..."
-    - kubectl apply -f k8s/
+    - kubectl apply -f k3s/
     - kubectl set image deployment/myweb-application web=$IMAGE
     - echo "Attente que les pods soient prêts..."
     - kubectl rollout status deployment/myweb-application
